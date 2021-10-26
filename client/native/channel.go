@@ -449,6 +449,11 @@ func (c *Channel) Subscribe(key *ari.Key, n ...string) ari.Subscription {
 	return c.client.Bus().Subscribe(key, n...)
 }
 
+// Subscribe creates a new subscription for ARI events related to this channel
+func (c *Channel) Unsubscribe(key *ari.Key, n ...string) {
+	c.client.Bus().Unsubscribe(key, n...)
+}
+
 // GetVariable gets the value of the given variable
 func (c *Channel) GetVariable(key *ari.Key, name string) (string, error) {
 	var m struct {

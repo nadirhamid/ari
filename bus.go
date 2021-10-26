@@ -21,6 +21,7 @@ type Sender interface {
 // A Subscriber is an entity which can create ARI event subscriptions
 type Subscriber interface {
 	Subscribe(key *Key, n ...string) Subscription
+	Unsubscribe(key *Key, n ...string)
 }
 
 // A Subscription is a subscription on series of ARI events

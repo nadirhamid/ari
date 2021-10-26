@@ -127,6 +127,9 @@ type Channel interface {
 
 	// Subscribe subscribes on the channel events
 	Subscribe(key *Key, n ...string) Subscription
+
+	// Unsubcribe removes the requested event from the bus
+	Unsubscribe(key *Key, n ...string)
 }
 
 // channelDataJSON is the data for a specific channel
@@ -561,6 +564,15 @@ func (ch *ChannelHandle) Subscribe(n ...string) Subscription {
 	}
 
 	return ch.c.Subscribe(ch.key, n...)
+}
+
+// Unsubscribe
+func (ch *ChannelHandle) Unsubscribe(n ...string) {
+	if ch == nil {
+		return
+	}
+
+	ch.c.Unsubscribe(ch.key, n...)
 }
 
 // TODO: rest of ChannelHandle

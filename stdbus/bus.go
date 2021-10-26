@@ -84,6 +84,44 @@ func (b *bus) Subscribe(key *ari.Key, eTypes ...string) ari.Subscription {
 	return s
 }
 
+
+
+// Unsubcribe removes an active subscription from the bus
+func (b *bus) Unsubscribe(key *ari.Key, eTypes ...string) {
+	for _, sub := range b.subs {
+		if sub.key.ID == key.ID {
+			// check if events match
+			if sub == nil || sub.key == nil {
+					continue
+			}
+			fullMatch := true
+			if len( eTypes ) != len( sub.events ) {
+				fullMatch = false
+				break
+			}
+			for _, event1 := range sub.events {
+				foundEvent := false
+				for _, event2 := range eTypes {
+					if event1 == event2 {
+						foundEvent = true
+						break
+					}
+				}
+				if !foundEvent {
+					fullMatch = false
+					break
+				}
+			}
+
+			if !fullMatch {
+				// could not find the subscription
+				return
+			}
+			b.remove(sub)
+		}
+	}
+}
+
 // add appends a new subscription to the bus
 func (b *bus) add(s *subscription) {
 	b.rwMux.Lock()
