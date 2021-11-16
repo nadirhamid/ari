@@ -254,6 +254,11 @@ func (r *Result) Save(name string) error {
 	return nil
 }
 
+// Save stores the recording to the given name
+func (r *Result) File() ([]byte, error) {
+	return r.h.File()
+}
+
 // URI returns the AudioURI to play the recording
 func (r *Result) URI() string {
 	return "recording:" + r.h.ID()

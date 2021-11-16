@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"io"
+	"io/ioutil"
 	"net/http"
 	"time"
 
@@ -76,6 +77,13 @@ func (c *Client) get(url string, resp interface{}) error {
 	return c.makeRequest("GET", url, resp, nil)
 }
 
+// binary for fetching resources
+func (c *Client) getBinary(url string) ([]byte, error) {
+	url = c.Options.URL + url
+
+	return c.makeBinaryRequest("GET", url)
+}
+
 // post calls the ARI server with a POST request.
 func (c *Client) post(requestURL string, resp interface{}, req interface{}) error {
 	url := c.Options.URL + requestURL
@@ -135,6 +143,29 @@ func (c *Client) makeRequest(method, url string, resp interface{}, req interface
 	}
 
 	return maybeRequestError(ret)
+}
+
+func (c *Client) makeBinaryRequest(method, url string) ([]byte,error) {
+	var r *http.Request
+
+	if c.Options.Username != "" {
+		r.SetBasicAuth(c.Options.Username, c.Options.Password)
+	}
+
+	ret, err := c.httpClient.Do(r)
+	if err != nil {
+		return nil, eris.Wrap(err, "failed to make request")
+	}
+
+	defer ret.Body.Close() //nolint:errcheck
+
+	buf, err := ioutil.ReadAll(ret.Body)
+	if err != nil {
+		return nil,eris.Wrap(err, "failed to read binary data")
+	}
+
+
+	return buf, nil
 }
 
 func structToRequestBody(req interface{}) (io.Reader, error) {
