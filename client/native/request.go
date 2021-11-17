@@ -1,4 +1,4 @@
-package native
+npackage native
 
 import (
 	"bytes"
@@ -147,9 +147,10 @@ func (c *Client) makeRequest(method, url string, resp interface{}, req interface
 
 func (c *Client) makeBinaryRequest(method, url string) ([]byte,error) {
 	var r *http.Request
+	var err error
 
-	if c.Options.Username != "" {
-		r.SetBasicAuth(c.Options.Username, c.Options.Password)
+	if r, err = http.NewRequest(method, url, nil); err != nil {
+			return nil,eris.Wrap(err, "failed to create request")
 	}
 
 	ret, err := c.httpClient.Do(r)
@@ -165,7 +166,7 @@ func (c *Client) makeBinaryRequest(method, url string) ([]byte,error) {
 	}
 
 
-	return buf, nil
+	return buf, maybeRequestError(ret)
 }
 
 func structToRequestBody(req interface{}) (io.Reader, error) {
