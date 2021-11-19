@@ -1,4 +1,4 @@
-npackage native
+package native
 
 import (
 	"bytes"
