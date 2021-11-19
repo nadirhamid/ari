@@ -95,14 +95,6 @@ func (sr *StoredRecording) StageCopy(key *ari.Key, dest string) (*ari.StoredReco
 	}), nil
 }
 
-// Fetch the raw data for the recording
-func (sr *StoredRecording) File(key *ari.Key) ([]byte, error) {
-	data, err := sr.StageFile(key)
-	if err != nil {
-		return nil, err
-	}
-	return data, nil
-}
 
 // StageCopy creates a `StoredRecordingHandle` with a `Copy` operation staged.
 func (sr *StoredRecording) StageFile(key *ari.Key) ([]byte, error) {
