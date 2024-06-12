@@ -153,6 +153,10 @@ func (c *Client) makeBinaryRequest(method, url string) ([]byte,error) {
 			return nil,eris.Wrap(err, "failed to create request")
 	}
 
+	if c.Options.Username != "" {
+		r.SetBasicAuth(c.Options.Username, c.Options.Password)
+	}
+
 	ret, err := c.httpClient.Do(r)
 	if err != nil {
 		return nil, eris.Wrap(err, "failed to make request")
